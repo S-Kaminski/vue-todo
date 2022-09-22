@@ -14,6 +14,13 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    addNewTask(state, newTask){
+      state.tasks.push({
+        id: newTask.id,
+        description: newTask.description,
+        important: newTask.important
+      })
+    }
   },
   actions: {
   },
