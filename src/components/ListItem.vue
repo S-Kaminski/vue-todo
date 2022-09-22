@@ -1,8 +1,8 @@
 <template>
     <div>
-        <li v-for="task in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
+        <li v-for="(task, index) in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
             <input type="checkbox"/>
-            <span>{{ task.description }}</span>
+            <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover">x</button>
         </li>
         
@@ -19,6 +19,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 </script>
 
 <style scoped>
+li{
+    padding: 10px;
+    border-bottom: 1px solid #dddddd;
+    list-style-type: none;
+    clear: left;
+    text-align: left;
+}
 li.important{
     color:red;
 }
@@ -32,5 +39,6 @@ button.remover {
 }
 button.remover:hover{
     background: #eee;
+    color: red;
 }
 </style>
