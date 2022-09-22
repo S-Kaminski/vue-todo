@@ -10,13 +10,14 @@
         <label>Ważne</label>
       </span>
       {{$store.state.tasks}}
+      <ListItem></ListItem>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
-import ListItem from 'ListItem.vue'
+import ListItem from './ListItem.vue'
 
 @Component({
   components: {
