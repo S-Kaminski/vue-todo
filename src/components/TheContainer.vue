@@ -16,8 +16,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
+import ListItem from 'ListItem.vue'
 
-@Component
+@Component({
+  components: {
+    ListItem
+  },
+})
+
   export default class TheContainer extends Vue {
     //Data
     taskDescription = "";
