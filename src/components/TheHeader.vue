@@ -1,6 +1,7 @@
 <template>
     <div>
-       
+        <span>Liczba zadań: </span> 
+        <span>NULL</span> <!-- TODO: count list elements from list component -->
     </div>
 </template>
 
