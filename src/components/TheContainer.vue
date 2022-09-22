@@ -1,5 +1,16 @@
 <template>
-    <div></div>
+    <div>
+      <p>Lista zadań:</p>
+      <span>
+        <input type="text"/>
+        <button>+ Dodaj</button>
+      </span>
+      <span>
+        <input type="checkbox"/>
+        <label>Ważne</label>
+      </span>
+
+    </div>
 </template>
 
 <script lang="ts">
