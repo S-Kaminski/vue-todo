@@ -2,14 +2,13 @@
     <div>
       <p>Lista zadań:</p>
       <span>
-        <input type="text" v-model="taskDescription"/>
+        <input type="text" v-model.trim="taskDescription"/>
         <button @click="addNewTask()">+ Dodaj</button>
       </span>
       <span>
         <input type="checkbox" v-model="taskImportance" />
         <label>Ważne</label>
       </span>
-      {{$store.state.tasks}}
       <ListItem></ListItem>
     </div>
 </template>
@@ -29,13 +28,19 @@ import ListItem from './ListItem.vue'
     //Data
     taskDescription = "";
     taskImportance = false;
-    
+
     public addNewTask(): void{
-      this.$store.commit('addNewTask',{
-        id: uuidv4() as string,
-        description: this.taskDescription,
-        important: this.taskImportance
-      })
+
+      if(this.taskDescription.length > 0)
+      {
+        this.$store.commit('addNewTask',{
+          id: uuidv4() as string,
+          description: this.taskDescription,
+          important: this.taskImportance
+        });
+        this.taskDescription = "";
+      }
+      
     } 
   }
 </script>
