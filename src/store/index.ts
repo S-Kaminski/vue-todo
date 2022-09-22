@@ -9,6 +9,9 @@ export default new Vuex.Store({
     tasks: [] as Task[]
   },
   getters: {
+    tasks (state){
+      return state.tasks
+    }
   },
   mutations: {
   },
