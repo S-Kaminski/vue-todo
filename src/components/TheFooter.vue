@@ -4,7 +4,7 @@
        <button @click="moveUp">W górę</button>
        <button @click="moveDown">W dół</button>
        <button @click="markImportant">Oznacz jako ważne</button>
-       <button>Wyczyść</button>
+       <button @click="removeAllTasks">Wyczyść</button>
 
     </div>
 </template>
@@ -21,6 +21,8 @@ import { Component, Vue, Emit} from 'vue-property-decorator';
     moveDown(){ return "Down"; }
     @Emit("mark-important")
     markImportant(){ return true; }
+    @Emit("remove-all-tasks")
+    removeAllTasks(){ return true; }
   }
 </script>
 
