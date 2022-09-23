@@ -5,19 +5,31 @@
             <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover">x</button>
         </li>
-        
+        <TheFooter @move-up="moveUp" @move-down="moveDown"></TheFooter>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Direction } from '../types'
+import TheFooter from './TheFooter.vue'
 
 @Component({
-
+    components: {
+        TheFooter
+    }
 })
   export default class ListItem extends Vue {
-    @Prop({required: true}) direction : Direction = "Up";
+    //Data
+    @Watch("direction")
+    public moveUp(value: Direction): void{
+        console.log(value);
+    }
+    @Watch("direction")
+    public moveDown(value: Direction): void{
+        console.log(value);
+    }
+
   }
 </script>
 
