@@ -1,7 +1,8 @@
 <template>
     <div>
-       <button>W górę</button>
-       <button>W dół</button>
+
+       <button @click="moveUp">W górę</button>
+       <button @click="moveDown">W dół</button>
        <button>Oznacz jako ważne</button>
        <button>Wyczyść</button>
 
@@ -9,11 +10,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Emit} from 'vue-property-decorator';
 
-@Component
+@Component({})
   export default class TheFooter extends Vue {
 
+    @Emit("move-up")
+    moveUp(){ return "Up" }
+    @Emit("move-down")
+    moveDown(){ return "Down" }
   }
 </script>
 
