@@ -5,7 +5,7 @@
             <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover" @click="removeTask(task.id)">x</button>
         </li>
-        <TheFooter @move-up="moveUp" @move-down="moveDown" @mark-important="markImportant"></TheFooter>
+        <TheFooter @move-up="moveUp" @move-down="moveDown" @mark-important="markImportant" @remove-all-tasks="removeAllTasks"></TheFooter>
         {{checkedTasks}}
     </div>
 </template>
@@ -24,7 +24,7 @@ import TheFooter from './TheFooter.vue'
     //Data
     checkedTasks: string[] = [];
 
-    public removeTask(taskId: string): void{
+    public removeTask(taskId: string): void {
         if(confirm("Czy na pewno chcesz usunąć to zadanie?")){
             const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === taskId);
             this.$store.state.tasks.splice(index,1);
@@ -32,17 +32,16 @@ import TheFooter from './TheFooter.vue'
     }
 
     @Watch("movementUp")
-    public moveUp(value: Direction): void{
+    public moveUp(value: Direction): void { 
         console.log(value);
     }
     @Watch("movementDown")
-    public moveDown(value: Direction): void{
+    public moveDown(value: Direction): void {
         console.log(value);
     }
     @Watch("changeImportance")
-    public markImportant()
-    {
-        console.log("Mark important")
+    public markImportant(): void {
+        
         if (this.checkedTasks.length>0){
             for(let i = 0; i < this.checkedTasks.length; i++)
             {
@@ -51,9 +50,20 @@ import TheFooter from './TheFooter.vue'
             }
             this.$store.state.tasks
             this.checkedTasks.splice(0);
+            console.log("Marked as important")
         }
     }
-
+    @Watch("clearList")
+    public removeAllTasks(): void {
+        if(this.$store.state.tasks.length > 0){
+            if(confirm("Czy na pewno chcesz usunąć wszystkie zadania na liście?")) {
+            this.$store.state.tasks.splice(0);
+            console.log("Removed all tasks");
+            }
+        }
+        else console.log("Task list is already empty")
+        
+    }
   }
 </script>
 
