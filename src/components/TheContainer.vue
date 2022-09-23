@@ -2,7 +2,7 @@
     <div>
       <p>Lista zadań:</p>
       <span>
-        <input type="text" v-model.trim="taskDescription"/>
+        <input type="text" placeholder="Opis zadania" v-model.trim="taskDescription" />
         <button @click="addNewTask()">+ Dodaj</button>
       </span>
       <span>
