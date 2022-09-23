@@ -1,6 +1,10 @@
 <template>
     <div>
-       
+       <button>W górę</button>
+       <button>W dół</button>
+       <button>Oznacz jako ważne</button>
+       <button>Wyczyść</button>
+
     </div>
 </template>
 
