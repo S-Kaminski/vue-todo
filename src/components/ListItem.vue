@@ -1,11 +1,12 @@
 <template>
     <div>
         <li v-for="(task, index) in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
-            <input type="checkbox"/>
+            <input type="checkbox" :value="task.id" v-model="checkedTasks"/>
             <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover" @click="removeTask(task.id)">x</button>
         </li>
-        <TheFooter @move-up="moveUp" @move-down="moveDown"></TheFooter>
+        <TheFooter @move-up="moveUp" @move-down="moveDown" @mark-important="markImportant"></TheFooter>
+        {{checkedTasks}}
     </div>
 </template>
 
@@ -21,20 +22,36 @@ import TheFooter from './TheFooter.vue'
 })
   export default class ListItem extends Vue {
     //Data
-    private removeTask(taskId: string): void{
+    checkedTasks: string[] = [];
+
+    public removeTask(taskId: string): void{
         if(confirm("Czy na pewno chcesz usunąć to zadanie?")){
             const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === taskId);
             this.$store.state.tasks.splice(index,1);
         }
     }
 
-    @Watch("direction")
+    @Watch("movementUp")
     public moveUp(value: Direction): void{
         console.log(value);
     }
-    @Watch("direction")
+    @Watch("movementDown")
     public moveDown(value: Direction): void{
         console.log(value);
+    }
+    @Watch("changeImportance")
+    public markImportant()
+    {
+        console.log("Mark important")
+        if (this.checkedTasks.length>0){
+            for(let i = 0; i < this.checkedTasks.length; i++)
+            {
+                const index = this.$store.state.tasks.findIndex((t: Task) => t.id == this.checkedTasks[i])
+                this.$store.state.tasks[index].important = true;
+            }
+            this.$store.state.tasks
+            this.checkedTasks.splice(0);
+        }
     }
 
   }
