@@ -11,10 +11,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Direction } from '../types'
 
-@Component
+@Component({
+
+})
   export default class ListItem extends Vue {
-
+    @Prop({required: true}) direction : Direction = "Up";
   }
 </script>
 
