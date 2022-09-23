@@ -3,15 +3,15 @@
         <li v-for="(task, index) in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
             <input type="checkbox"/>
             <span> {{ (index+1)}}. {{ task.description }}</span>
-            <button class="remover">x</button>
+            <button class="remover" @click="removeTask(task.id)">x</button>
         </li>
         <TheFooter @move-up="moveUp" @move-down="moveDown"></TheFooter>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Direction } from '../types'
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Direction, Task } from '../types'
 import TheFooter from './TheFooter.vue'
 
 @Component({
@@ -21,6 +21,13 @@ import TheFooter from './TheFooter.vue'
 })
   export default class ListItem extends Vue {
     //Data
+    private removeTask(taskId: string): void{
+        if(confirm("Czy na pewno chcesz usunąć to zadanie?")){
+            const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === taskId);
+            this.$store.state.tasks.splice(index,1);
+        }
+    }
+
     @Watch("direction")
     public moveUp(value: Direction): void{
         console.log(value);
