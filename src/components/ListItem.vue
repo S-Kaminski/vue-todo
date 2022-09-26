@@ -1,7 +1,7 @@
 <template>
     <div>
         <li v-for="(task, index) in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
-            <input type="checkbox" :value="checkedTask(index,task.id)" v-model="checkedTasks"/>
+            <input type="checkbox" :value="checkedTask(index,task.id)" v-model="checkedTasks" @change="sortSelectedTasks"/>
             <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover" @click="removeTask(task.id)">x</button>
         </li>
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Direction, Task } from '../types'
+import { Direction, Task, SelectedTask } from '../types'
 import TheFooter from './TheFooter.vue'
 
 @Component({
@@ -22,16 +22,15 @@ import TheFooter from './TheFooter.vue'
 })
   export default class ListItem extends Vue {
     //Data
-    checkedTasks: [] = [];
-    index = -1;
+    checkedTasks:  [] = [] ;
 
+    //Methods
     public checkedTask(i: number, id: string){
         return {
             index: i,
             id: id
         }
     }
-
 
     public removeTask(taskId: string): void {
         if(confirm("Czy na pewno chcesz usunąć to zadanie?")){
@@ -40,15 +39,25 @@ import TheFooter from './TheFooter.vue'
         }
     }
 
+    public sortSelectedTasks(){
+        this.checkedTasks.sort((a:SelectedTask,b:SelectedTask) =>{
+            return a.index - b.index;
+        })
+        console.log("Updated order of selected tasks.");
+    }
+
+    //Watch
     @Watch("movementUp")
     public moveUp(value: Direction): void { 
-        //this.checkedTasks.sort(() = > )
+
         console.log(value);
     }
+
     @Watch("movementDown")
     public moveDown(value: Direction): void {
         console.log(value);
     }
+    
     @Watch("changeImportance")
     public markImportant(): void {
         
@@ -65,6 +74,7 @@ import TheFooter from './TheFooter.vue'
             }
         }
     }
+
     @Watch("clearList")
     public removeAllTasks(): void {
         if(this.$store.state.tasks.length > 0){
