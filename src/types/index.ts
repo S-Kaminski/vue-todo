@@ -5,3 +5,8 @@ export interface Task {
 }
 
 export type Direction = "Up" | "Down"
+
+export type SelectedTask = {
+    index: number,
+    id: string
+}
