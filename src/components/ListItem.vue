@@ -1,7 +1,7 @@
 <template>
     <div>
         <li v-for="(task, index) in $store.state.tasks" :key="task.id" :class="{'important': task.important}">
-            <input type="checkbox" :value="task.id" v-model="checkedTasks"/>
+            <input type="checkbox" :value="checkedTask(index,task.id)" v-model="checkedTasks"/>
             <span> {{ (index+1)}}. {{ task.description }}</span>
             <button class="remover" @click="removeTask(task.id)">x</button>
         </li>
@@ -22,7 +22,16 @@ import TheFooter from './TheFooter.vue'
 })
   export default class ListItem extends Vue {
     //Data
-    checkedTasks: string[] = [];
+    checkedTasks: [] = [];
+    index = -1;
+
+    public checkedTask(i: number, id: string){
+        return {
+            index: i,
+            id: id
+        }
+    }
+
 
     public removeTask(taskId: string): void {
         if(confirm("Czy na pewno chcesz usunąć to zadanie?")){
@@ -33,6 +42,7 @@ import TheFooter from './TheFooter.vue'
 
     @Watch("movementUp")
     public moveUp(value: Direction): void { 
+        //this.checkedTasks.sort(() = > )
         console.log(value);
     }
     @Watch("movementDown")
