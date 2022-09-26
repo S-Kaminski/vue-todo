@@ -43,14 +43,16 @@ import TheFooter from './TheFooter.vue'
     public markImportant(): void {
         
         if (this.checkedTasks.length>0){
-            for(let i = 0; i < this.checkedTasks.length; i++)
-            {
-                const index = this.$store.state.tasks.findIndex((t: Task) => t.id == this.checkedTasks[i])
-                this.$store.state.tasks[index].important = true;
+            if(confirm("Czy na pewno chcesz ustawić zaznaczone zadania na liście jako ważne?")) {
+                for(let i = 0; i < this.checkedTasks.length; i++)
+                {
+                    const index = this.$store.state.tasks.findIndex((t: Task) => t.id == this.checkedTasks[i])
+                    this.$store.state.tasks[index].important = true;
+                }
+                this.$store.state.tasks
+                this.checkedTasks.splice(0);
+                console.log("Marked as important")
             }
-            this.$store.state.tasks
-            this.checkedTasks.splice(0);
-            console.log("Marked as important")
         }
     }
     @Watch("clearList")
