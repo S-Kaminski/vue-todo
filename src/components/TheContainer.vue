@@ -8,8 +8,10 @@
       <span>
         <input type="checkbox" v-model="taskImportance" />
         <label>Ważne</label>
-      </span>
-      <ListItem></ListItem>
+      </span>      
+      <SingleItem v-for="(task, index) in $store.state.tasks" :key="task.id + index" :index="index" :task="task"></SingleItem>
+      <TheFooter></TheFooter>
+      <!-- <ListItem></ListItem>-->
     </div>
 </template>
 
@@ -17,30 +19,34 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
 import ListItem from './ListItem.vue'
+import SingleItem from './SingleItem.vue'
+import TheFooter from './TheFooter.vue'
 
 @Component({
   components: {
-    ListItem
+    ListItem,
+    SingleItem,
+    TheFooter
   },
 })
 
   export default class TheContainer extends Vue {
+    //Props
+    //..
     //Data
     taskDescription = "";
     taskImportance = false;
-
-    public addNewTask(): void{
-
+    //Methods
+    public addNewTask(): void {
       if(this.taskDescription.length > 0)
       {
-        this.$store.commit('addNewTask',{
+        this.$store.commit('addNewTask', {
           id: uuidv4() as string,
           description: this.taskDescription,
           important: this.taskImportance
         });
         this.taskDescription = "";
       }
-      
     } 
   }
 </script>
