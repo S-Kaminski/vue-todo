@@ -1,5 +1,6 @@
 <template>
     <div>
+      <TheHeader :count="$store.state.tasks.length"></TheHeader>
       <p>Lista zadań:</p>
       <span>
         <input type="text" placeholder="Opis zadania" v-model.trim="taskDescription" />
@@ -25,15 +26,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types'
 import ListItem from './ListItem.vue'
 import SingleItem from './SingleItem.vue'
 import TheFooter from './TheFooter.vue'
+import TheHeader from './TheHeader.vue'
 
 @Component({
   components: {
+    TheHeader,
     ListItem,
     SingleItem,
     TheFooter
