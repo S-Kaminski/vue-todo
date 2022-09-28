@@ -8,10 +8,18 @@
       <span>
         <input type="checkbox" v-model="taskImportance" />
         <label>Ważne</label>
-      </span>      
-      <SingleItem v-for="(task, index) in $store.state.tasks" :key="task.id + index" :index="index" :task="task" @task-selection="taskSelection" :checkboxStatus="selectedTasks.includes(task.id)"></SingleItem>
-      <TheFooter @mark-important="markImportant" @remove-all-tasks="removeAllTasks"></TheFooter>
-      <!-- <ListItem></ListItem>-->
+      </span>  
+        <SingleItem v-for="(task, index) in $store.state.tasks" 
+          :key="task.id + index" 
+          :index="index" :task="task" 
+          @task-selection="taskSelection" 
+          @remove-task="removeSingleTask" 
+          :checkboxStatus="selectedTasks.includes(task.id)">
+        </SingleItem>
+      <TheFooter 
+        @mark-important="markImportant" 
+        @remove-all-tasks="removeAllTasks">
+      </TheFooter>
       {{selectedTasks}}
     </div>
 </template>
@@ -60,8 +68,16 @@ import TheFooter from './TheFooter.vue'
       if(value.taskStatus) this.selectedTasks.push(value.taskId);
       else this.selectedTasks.splice(this.selectedTasks.findIndex( (task: string) => task === value.taskId),1 );
     }
+    @Watch("removeSingleTask")
+    public removeSingleTask(value: {taskId: string, taskStatus: boolean}): void {
+      if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
+        if(value.taskStatus) this.taskSelection({taskId: value.taskId, taskStatus: value.taskStatus});
+        const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === value.taskId );
+        this.$store.state.tasks.splice(index,1);
+        }
+    }
     @Watch("markImportant")
-    public markImportant(): void {
+    public markImportant(): void { //todo
         
         if (this.selectedTasks.length>0){
             if(confirm("Czy na pewno chcesz ustawić zaznaczone zadania na liście jako ważne?")) {
