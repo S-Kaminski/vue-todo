@@ -1,20 +1,16 @@
 <template>
   <div id="app">
-    <TheHeader></TheHeader>
     <TheContainer></TheContainer>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import TheHeader from './components/TheHeader.vue';
 import TheContainer from './components/TheContainer.vue'
 
 @Component({
   components: {
-    TheHeader,
     TheContainer,
-
   },
 })
 export default class App extends Vue {}
