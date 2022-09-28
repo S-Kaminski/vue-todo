@@ -11,10 +11,10 @@
       </span>  
         <SingleItem v-for="(task, index) in $store.state.tasks" 
           :key="task.id + index" 
-          :index="index" :task="task" 
+          :index="index" :task="task"
+          :status="selectedTasks.includes(task.id)"
           @task-selection="taskSelection" 
-          @remove-task="removeSingleTask" 
-          :checkboxStatus="selectedTasks.includes(task.id)">
+          @remove-task="removeSingleTask" >
         </SingleItem>
       <TheFooter 
         @mark-important="markImportant" 
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types'
 import ListItem from './ListItem.vue'
@@ -59,20 +59,33 @@ import TheFooter from './TheFooter.vue'
         this.taskDescription = "";
       }
     }
+    //Computed
+    get taskArray()
+    {
+      return this.selectedTasks;
+    }
     //Emit
     //...
     //Watch
     @Watch("taskSelected")
     taskSelection(value: { taskId: string, taskStatus: boolean }): void {
       console.log("TheContainer received: { id: " + value.taskId + ", status: " + + value.taskStatus + "}");
-      if(value.taskStatus) this.selectedTasks.push(value.taskId);
-      else this.selectedTasks.splice(this.selectedTasks.findIndex( (task: string) => task === value.taskId),1 );
+      if (value.taskStatus && (this.selectedTasks.includes(value.taskId))) {
+        console.log(this.selectedTasks + "includes? " + (this.selectedTasks.includes(value.taskId)));
+      }
+      else if(value.taskStatus && !(this.selectedTasks.includes(value.taskId))) {
+        console.log("Selection: " + value.taskStatus + " adding to array. ");
+        this.selectedTasks.push(value.taskId);
+      }
+       
+      else this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
     }
     @Watch("removeSingleTask")
     public removeSingleTask(value: {taskId: string, taskStatus: boolean}): void {
       if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
-        if(value.taskStatus) this.taskSelection({taskId: value.taskId, taskStatus: value.taskStatus});
         const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === value.taskId );
+        console.log("Should remove => id:" + value.taskId + " checked?:"+value.taskStatus )
+        if(value.taskStatus) this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
         this.$store.state.tasks.splice(index,1);
         }
     }
