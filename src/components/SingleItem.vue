@@ -1,9 +1,8 @@
-
 <template>
     <div>
         <li :class="{'important': task.important}"> 
-            <input type="checkbox" :value="task.id" v-model="checkboxStatus"/>
-            {{index}} . {{task.description}} 
+            <input type="checkbox" :value="task.id" v-model="computedStatus"/>
+            {{index}} . {{task.description}} -> {{task.description}}
             <button class="remover" @click="removeTask">x</button>
         </li>
     </div>
@@ -17,10 +16,21 @@ import { Task } from '../types'
         //Props
         @Prop() readonly index!: number;
         @Prop() readonly task!: Task;
+        @Prop() readonly status!: boolean;
+
         //Data
-        checkboxStatus = false;
+        //checkboxStatus = false;
         //Methods
-        
+        //Computed
+        get computedStatus(){
+            return this.status;
+        }
+        set computedStatus(val: boolean)
+        {
+            this.taskSelection(val);
+            console.log("Update computed")
+            //this.checkboxStatus = val;
+        }
         //Emit
         @Emit("task-selection")
         taskSelection(status: boolean): { taskId: string, taskStatus: boolean } {
@@ -30,16 +40,21 @@ import { Task } from '../types'
         @Emit("remove-task")
         public removeTask(): {taskId: string, taskStatus: boolean} { 
             console.log("SingleItem component emit -> removeItem " + this.task.id);
-            return { taskId: this.task.id, taskStatus: this.checkboxStatus } 
+            return { taskId: this.task.id, taskStatus: this.computedStatus } 
+        }
+        //Watch
+        @Watch("selected")
+        public checkStatus(value: string[]){
+            console.log("Array should update = " + this.computedStatus +" "+ value.includes(this.task.id));
+            this.computedStatus = this.$attrs.Array.includes(this.task.id) ? false: true;
+            
         }
 
-        //Watch
-        @Watch("checkboxStatus")
+        @Watch("status")
         public clickCheckbox(): void {
             console.log("SingleItem component Watch -> selectionStatus changed");
-                this.taskSelection(this.checkboxStatus);
+                this.taskSelection(this.computedStatus);
         }
-        
         //...
     }
         
