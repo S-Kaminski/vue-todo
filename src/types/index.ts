@@ -5,9 +5,3 @@ export interface Task {
 }
 
 export type Direction = "Up" | "Down"
-
-export interface SelectedTask {
-    index: number,
-    id: string
-      
-}
