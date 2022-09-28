@@ -2,7 +2,7 @@
     <div>
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="computedStatus"/>
-            {{index}} . {{task.description}} -> {{task.description}}
+            {{index}} . {{task.description}} 
             <button class="remover" @click="removeTask">x</button>
         </li>
     </div>
