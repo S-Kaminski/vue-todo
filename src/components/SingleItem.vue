@@ -4,7 +4,7 @@
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="checkboxStatus"/>
             {{index}} . {{task.description}} 
-            <button class="remover" @click.prevent="removeTask">x</button>
+            <button class="remover" @click="removeTask">x</button>
         </li>
     </div>
 </template>
@@ -20,19 +20,19 @@ import { Task } from '../types'
         //Data
         checkboxStatus = false;
         //Methods
-        public removeTask(): void {
-            if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
-                if(this.checkboxStatus) this.taskSelection(false);
-                const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === this.task.id );
-                this.$store.state.tasks.splice(index,1);
-            }
-        }
+        
         //Emit
         @Emit("task-selection")
         taskSelection(status: boolean): { taskId: string, taskStatus: boolean } {
             console.log("SingleItem component Emit -> selectedTask " + status + " <-");
             return { taskId: this.task.id, taskStatus: status};
         }
+        @Emit("remove-task")
+        public removeTask(): {taskId: string, taskStatus: boolean} { 
+            console.log("SingleItem component emit -> removeItem " + this.task.id);
+            return { taskId: this.task.id, taskStatus: this.checkboxStatus } 
+        }
+
         //Watch
         @Watch("checkboxStatus")
         public clickCheckbox(): void {
