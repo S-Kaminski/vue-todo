@@ -3,8 +3,13 @@
       <TheHeader :count="$store.state.tasks.length"></TheHeader>
       <p>Lista zadań:</p>
       <span>
-        <input type="text" placeholder="Opis zadania" v-model.trim="taskDescription" />
-        <button @click="addNewTask()">+ Dodaj</button>
+        <input 
+          type="text" 
+          placeholder="Opis zadania" 
+          v-model.trim="taskDescription" 
+          @keydown.enter="addNewTask"
+        />
+        <button @click="addNewTask">+ Dodaj</button>
       </span>
       <span>
         <input type="checkbox" v-model="taskImportance" />
@@ -17,7 +22,9 @@
           @task-selection="taskSelection" 
           @remove-task="removeSingleTask" >
         </SingleItem>
-      <TheFooter 
+      <TheFooter
+        @move-up="moveTasks"
+        @move-down="moveTasks"
         @mark-important="markImportant" 
         @remove-all-tasks="removeAllTasks">
       </TheFooter>
@@ -62,16 +69,63 @@ import TheHeader from './TheHeader.vue'
         this.taskDescription = "";
       }
     }
-    //Computed
-    get taskArray()
-    {
-      return this.selectedTasks;
+
+    public moveUp(): void {
+      const checkedTasksIndexes: number[] = [];
+        this.selectedTasks.forEach( (task) => {
+            checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+        })
+        checkedTasksIndexes.sort();
+        for(let i = 0; i < checkedTasksIndexes.length; i++){
+            if(checkedTasksIndexes[i]>0)
+            {
+                const newPosition = checkedTasksIndexes[i]-1;
+                const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
+                this.$store.state.tasks.splice(newPosition,0,arrayElement);
+                checkedTasksIndexes[i] = -1;
+            }
+        }
     }
+
+    public moveDown(): void { 
+      const checkedTasksIndexes: number[] = [];
+        this.selectedTasks.forEach( (task) => {
+            checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+        })
+        checkedTasksIndexes.sort().reverse();
+        for(let i = 0; i < checkedTasksIndexes.length; i++){
+            if(checkedTasksIndexes[i]<this.$store.state.tasks.length-1)
+            {
+                const newPosition = checkedTasksIndexes[i]+1;
+                const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
+                this.$store.state.tasks.splice(newPosition,0,arrayElement);
+                checkedTasksIndexes[i] = -1;
+            }
+        }
+    }
+    //Computed
+    //...
     //Emit
     //...
     //Watch
+    @Watch("movementOfTasks")
+    public moveTasks(value: string): void {
+      if (this.selectedTasks.length) {
+        switch (value) {
+        case "Up":
+          console.log("Move \"Up\" Signal")
+          this.moveUp();
+          break;
+        case "Down":
+          this.moveDown()
+          console.log("Move \"Down\" Signal")
+          break;
+        }
+      }
+      
+    }
     @Watch("taskSelected")
-    taskSelection(value: { taskId: string, taskStatus: boolean }): void {
+    public taskSelection(value: { taskId: string, taskStatus: boolean }): void {
       console.log("TheContainer received: { id: " + value.taskId + ", status: " + + value.taskStatus + "}");
       if (value.taskStatus && (this.selectedTasks.includes(value.taskId))) {
         console.log(this.selectedTasks + "includes? " + (this.selectedTasks.includes(value.taskId)));
