@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="buttons">
 
        <button @click="moveUp">W górę</button>
        <button @click="moveDown">W dół</button>
@@ -27,5 +27,14 @@ import { Component, Vue, Emit} from 'vue-property-decorator';
 </script>
 
 <style scoped>
-
+div.buttons {
+  min-width: 60vw;
+  max-width: 60vw;
+  display: inline-block;
+  background-color: white;
+  border: solid 1px;
+  padding: 20px;
+  position: sticky;
+  bottom: 0;
+}
 </style>
