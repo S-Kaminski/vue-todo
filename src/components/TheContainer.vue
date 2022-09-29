@@ -1,34 +1,38 @@
 <template>
     <div>
       <TheHeader :count="$store.state.tasks.length"></TheHeader>
-      <p>Lista zadań:</p>
-      <span>
-        <input 
-          type="text" 
-          placeholder="Opis zadania" 
-          v-model.trim="taskDescription" 
-          @keydown.enter="addNewTask"
-        />
-        <button @click="addNewTask">+ Dodaj</button>
-      </span>
-      <span>
-        <input type="checkbox" v-model="taskImportance" />
-        <label>Ważne</label>
-      </span>  
-        <SingleItem v-for="(task, index) in $store.state.tasks" 
-          :key="task.id + index" 
-          :index="index" :task="task"
-          :status="selectedTasks.includes(task.id)"
-          @task-selection="taskSelection" 
-          @remove-task="removeSingleTask" >
-        </SingleItem>
+      <div id="main">
+        <p id="label">Lista zadań:</p>
+        <span>
+          <input 
+            type="text" 
+            placeholder="Opis zadania"
+            id="task-description" 
+            v-model.trim="taskDescription" 
+            @keydown.enter="addNewTask"
+          />
+          <button 
+            @click="addNewTask"
+            id="task-adder">+ Dodaj</button>
+        </span>
+        <span id="important">
+          <input type="checkbox" v-model="taskImportance" value="important-cb"/>
+          <label for="important-cb">Ważne</label>
+        </span>  
+          <SingleItem v-for="(task, index) in $store.state.tasks" 
+            :key="task.id + index" 
+            :index="index" :task="task"
+            :status="selectedTasks.includes(task.id)"
+            @task-selection="taskSelection" 
+            @remove-task="removeSingleTask" >
+          </SingleItem>
+      </div>
       <TheFooter
         @move-up="moveTasks"
         @move-down="moveTasks"
         @mark-important="markImportant" 
         @remove-all-tasks="removeAllTasks">
       </TheFooter>
-      {{selectedTasks}}
     </div>
 </template>
 
@@ -93,7 +97,7 @@ import TheHeader from './TheHeader.vue'
             checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
         })
         checkedTasksIndexes.sort().reverse();
-        for(let i = 0; i < checkedTasksIndexes.length; i++){
+        for(let i = 0; i < checkedTasksIndexes.length; i++) {
             if(checkedTasksIndexes[i]<this.$store.state.tasks.length-1)
             {
                 const newPosition = checkedTasksIndexes[i]+1;
@@ -103,12 +107,7 @@ import TheHeader from './TheHeader.vue'
             }
         }
     }
-    //Computed
-    //...
-    //Emit
-    //...
-    //Watch
-    @Watch("movementOfTasks")
+
     public moveTasks(value: string): void {
       if (this.selectedTasks.length) {
         switch (value) {
@@ -122,22 +121,19 @@ import TheHeader from './TheHeader.vue'
           break;
         }
       }
-      
     }
-    @Watch("taskSelected")
+
     public taskSelection(value: { taskId: string, taskStatus: boolean }): void {
       console.log("TheContainer received: { id: " + value.taskId + ", status: " + + value.taskStatus + "}");
-      if (value.taskStatus && (this.selectedTasks.includes(value.taskId))) {
-        console.log(this.selectedTasks + "includes? " + (this.selectedTasks.includes(value.taskId)));
-      }
-      else if(value.taskStatus && !(this.selectedTasks.includes(value.taskId))) {
+      if(value.taskStatus && !(this.selectedTasks.includes(value.taskId))) {
         console.log("Selection: " + value.taskStatus + " adding to array. ");
-        this.selectedTasks.push(value.taskId);
+        this.selectedTasks.push(value.taskId); 
       }
-       
-      else this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
+      else if (!value.taskStatus && (this.selectedTasks.includes(value.taskId))) {
+        this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
+      }
     }
-    @Watch("removeSingleTask")
+
     public removeSingleTask(value: {taskId: string, taskStatus: boolean}): void {
       if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
         const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === value.taskId );
@@ -146,10 +142,9 @@ import TheHeader from './TheHeader.vue'
         this.$store.state.tasks.splice(index,1);
         }
     }
-    @Watch("markImportant")
+
     public markImportant(): void { //todo
-        
-        if (this.selectedTasks.length>0){
+        if (this.selectedTasks.length>0) {
             if(confirm("Czy na pewno chcesz ustawić zaznaczone zadania na liście jako ważne?")) {
                 for(let i = 0; i < this.selectedTasks.length; i++)
                 {
@@ -162,7 +157,7 @@ import TheHeader from './TheHeader.vue'
             }
         }
     }
-    @Watch("clearTasks")
+
     public removeAllTasks(): void {
         if(this.$store.state.tasks.length > 0) {
             if(confirm("Czy na pewno chcesz usunąć wszystkie zadania na liście?")) {
@@ -172,11 +167,57 @@ import TheHeader from './TheHeader.vue'
             }
         }
         else console.log("Task list is already empty")
-        
     }
+    //Computed
+    //...
+    //Emit
+    //...
+    //Watch
+    
   }
 </script>
 
 <style scoped>
-
+div#main {
+  min-width: 60vw;
+  margin-bottom: 10px;
+  border: solid 1px;
+  display: inline-block;
+  text-align: left;
+  padding: 20px;
+}
+div p {
+  text-decoration: underline;
+  text-align: left;
+  display: block;
+  font-size: 15px;
+}
+input#task-description {
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid rgb(199, 199, 199);
+  width: 30%;
+  font-size:15px;
+  border-radius: 4px;    
+}
+button#task-adder {
+  padding: 10px;
+  margin: 10px 0;
+  margin-left: 10px;
+  border: 2px solid rgb(199, 199, 199);
+  font-size:15px;
+  border-radius: 4px;
+}
+button#task-adder:hover {
+  background-color:#98a3e2;
+  border: 2px solid rgb(0, 0, 0);
+  color:#fff;
+}
+span#important {
+  display:block;
+  margin: 0 auto;
+  margin: 10px 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dddddd;
+}
 </style>
