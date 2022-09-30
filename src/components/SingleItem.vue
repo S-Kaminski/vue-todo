@@ -2,7 +2,7 @@
     <div>
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="computedStatus"/>
-            {{index}} . {{task.description}} 
+            {{index+1}} . {{task.description}} 
             <button class="remover" @click="removeTask">x</button>
         </li>
     </div>
@@ -44,7 +44,7 @@ import { Task } from '../types'
         }
         //Watch
         @Watch("selected")
-        public checkStatus(value: string[]){
+        public checkStatus(value: string[]) {
             console.log("Array should update = " + this.computedStatus +" "+ value.includes(this.task.id));
             this.computedStatus = this.$attrs.Array.includes(this.task.id) ? false: true;
             
