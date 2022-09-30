@@ -3,5 +3,3 @@ export interface Task {
     description: string,
     important: boolean
 }
-
-export type Direction = "Up" | "Down"
