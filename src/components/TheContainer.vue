@@ -3,6 +3,7 @@
       <TheHeader :count="$store.state.tasks.length"></TheHeader>
       <div id="main">
         <p id="label">Lista zadań:</p>
+        <p id="error"></p>
         <span>
           <input 
             type="text" 
@@ -13,19 +14,26 @@
           />
           <button 
             @click="addNewTask"
-            id="task-adder">+ Dodaj</button>
+            id="task-adder"
+            :disabled="!(taskDescription.length>0)">
+              + Dodaj
+            </button>
         </span>
         <span id="important">
           <input type="checkbox" v-model="taskImportance" value="important-cb"/>
           <label for="important-cb">Ważne</label>
-        </span>  
+        </span>
+        <ul v-if="$store.state.tasks.length">  
           <SingleItem v-for="(task, index) in $store.state.tasks" 
             :key="task.id + index" 
             :index="index" :task="task"
             :status="selectedTasks.includes(task.id)"
             @task-selection="taskSelection" 
             @remove-task="removeSingleTask" >
+            x
           </SingleItem>
+        </ul>
+        <ul v-else>Brak zadań do wyświetlenia</ul>
       </div>
       <TheFooter
         @move-up="moveTasks"
@@ -37,10 +45,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types'
-import ListItem from './ListItem.vue'
 import SingleItem from './SingleItem.vue'
 import TheFooter from './TheFooter.vue'
 import TheHeader from './TheHeader.vue'
@@ -48,7 +55,6 @@ import TheHeader from './TheHeader.vue'
 @Component({
   components: {
     TheHeader,
-    ListItem,
     SingleItem,
     TheFooter
   },
@@ -63,7 +69,7 @@ import TheHeader from './TheHeader.vue'
     selectedTasks: string[] = [];
     //Methods
     public addNewTask(): void {
-      if(this.taskDescription.length > 0)
+      if(this.taskDescription.length)
       {
         this.$store.commit('addNewTask', {
           id: uuidv4() as string,
@@ -137,8 +143,8 @@ import TheHeader from './TheHeader.vue'
     public removeSingleTask(value: {taskId: string, taskStatus: boolean}): void {
       if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
         const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === value.taskId );
-        console.log("Should remove => id:" + value.taskId + " checked?:"+value.taskStatus )
-        if(value.taskStatus) this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
+        console.log("Should remove => id:" + value.taskId)
+        if(this.selectedTasks.includes(value.taskId)) this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
         this.$store.state.tasks.splice(index,1);
         }
     }
@@ -186,11 +192,15 @@ div#main {
   text-align: left;
   padding: 20px;
 }
-div p {
+div p#label {
   text-decoration: underline;
   text-align: left;
   display: block;
   font-size: 15px;
+}
+div p#error {
+  text-align: center;
+   color:red;
 }
 input#task-description {
   padding: 10px;
@@ -208,7 +218,7 @@ button#task-adder {
   font-size:15px;
   border-radius: 4px;
 }
-button#task-adder:hover {
+button:enabled#task-adder:hover {
   background-color:#98a3e2;
   border: 2px solid rgb(0, 0, 0);
   color:#fff;
@@ -219,5 +229,9 @@ span#important {
   margin: 10px 10px;
   padding-bottom: 15px;
   border-bottom: 1px solid #dddddd;
+}
+
+#single-element { 
+  text-align: left;
 }
 </style>
