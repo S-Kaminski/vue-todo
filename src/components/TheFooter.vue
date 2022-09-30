@@ -1,10 +1,14 @@
 <template>
     <div class="buttons">
-
-       <button @click="moveUp">W górę</button>
-       <button @click="moveDown">W dół</button>
-       <button @click="markImportant">Oznacz jako ważne</button>
-       <button @click="removeAllTasks">Wyczyść</button>
+      <span class="left">
+        <button @click="moveUp">W górę</button>
+        <button @click="moveDown">W dół</button>
+      </span>
+      <span class="right">
+        <button @click="markImportant">Oznacz jako ważne</button>
+        <button @click="removeAllTasks">Wyczyść</button>
+      </span>
+       
 
     </div>
 </template>
@@ -36,5 +40,26 @@ div.buttons {
   padding: 20px;
   position: sticky;
   bottom: 0;
+}
+span.left {
+  text-align: left;
+  float:left;
+}
+span.right {
+  text-align: right;
+  float:right;
+}
+button {
+  padding: 10px;
+  margin: 10px 0;
+  margin-left: 10px;
+  border: 2px solid rgb(199, 199, 199);
+  font-size:15px;
+  border-radius: 4px;
+}
+button:enabled:hover {
+  background-color:#98a3e2;
+  border: 2px solid rgb(0, 0, 0);
+  color:#fff;
 }
 </style>

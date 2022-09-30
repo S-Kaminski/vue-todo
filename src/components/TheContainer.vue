@@ -198,10 +198,7 @@ div p#label {
   display: block;
   font-size: 15px;
 }
-div p#error {
-  text-align: center;
-   color:red;
-}
+
 input#task-description {
   padding: 10px;
   margin: 10px 0;
@@ -230,8 +227,8 @@ span#important {
   padding-bottom: 15px;
   border-bottom: 1px solid #dddddd;
 }
-
-#single-element { 
-  text-align: left;
+ul { 
+  margin: 0;
+  padding: 0;
 }
 </style>
