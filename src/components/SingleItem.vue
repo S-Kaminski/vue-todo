@@ -1,15 +1,17 @@
 <template>
-    <div>
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="computedStatus"/>
             {{index+1}} . {{task.description}} 
-            <button class="remover" @click="removeTask">x</button>
+            <button 
+                class="remover" 
+                @click="removeTask">
+                    <slot></slot>
+            </button>
         </li>
-    </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 import { Task } from '../types'
     @Component
     export default class SingleItem extends Vue {
@@ -19,17 +21,17 @@ import { Task } from '../types'
         @Prop() readonly status!: boolean;
 
         //Data
-        //checkboxStatus = false;
+
         //Methods
+
         //Computed
         get computedStatus(){
             return this.status;
         }
         set computedStatus(val: boolean)
         {
-            this.taskSelection(val);
-            console.log("Update computed")
-            //this.checkboxStatus = val;
+            console.log("Update computed" )
+            this.taskSelection(val)
         }
         //Emit
         @Emit("task-selection")
@@ -38,24 +40,10 @@ import { Task } from '../types'
             return { taskId: this.task.id, taskStatus: status};
         }
         @Emit("remove-task")
-        public removeTask(): {taskId: string, taskStatus: boolean} { 
+        public removeTask(): string { 
             console.log("SingleItem component emit -> removeItem " + this.task.id);
-            return { taskId: this.task.id, taskStatus: this.computedStatus } 
+            return this.task.id;
         }
-        //Watch
-        @Watch("selected")
-        public checkStatus(value: string[]) {
-            console.log("Array should update = " + this.computedStatus +" "+ value.includes(this.task.id));
-            this.computedStatus = this.$attrs.Array.includes(this.task.id) ? false: true;
-            
-        }
-
-        @Watch("status")
-        public clickCheckbox(): void {
-            console.log("SingleItem component Watch -> selectionStatus changed");
-                this.taskSelection(this.computedStatus);
-        }
-        //...
     }
         
 </script>
@@ -65,22 +53,23 @@ import { Task } from '../types'
         padding: 10px;
         border-bottom: 1px solid #dddddd;
         list-style-type: none;
-        clear: left;
-        text-align: left;
+        
     }
     li.important {
         color:red;
+        background: rgb(238, 238, 238);
     }
     button.remover {
         border: none;
         background-color: inherit;
-        padding: 6px 10px;
+        color: red;
+        padding: 0px 10px;
         font-size: 16px;
         cursor: pointer;
-        display: inline-block;
+        float: right;
     }
     button.remover:hover {
         background: #eee;
-        color: red;
+        color: black;
     }
     </style>
