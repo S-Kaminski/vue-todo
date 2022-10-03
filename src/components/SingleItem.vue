@@ -1,11 +1,11 @@
 <template>
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="computedStatus"/>
-            {{index+1}} . {{task.description}} 
+            {{index+1}} . <slot></slot>
             <button 
                 class="remover" 
                 @click="removeTask">
-                    <slot></slot>
+                    x
             </button>
         </li>
 </template>

@@ -30,7 +30,7 @@
             :status="selectedTasks.includes(task.id)"
             @task-selection="taskSelection" 
             @remove-task="removeSingleTask" >
-            x
+            {{task.description}}
           </SingleItem>
         </ul>
         <ul v-else>Brak zadań do wyświetlenia</ul>
@@ -83,33 +83,35 @@ import TheHeader from './TheHeader.vue'
     public moveUp(): void {
       const checkedTasksIndexes: number[] = [];
         this.selectedTasks.forEach( (task) => {
-            checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+          checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
         })
         checkedTasksIndexes.sort();
-        for(let i = 0; i < checkedTasksIndexes.length; i++){
-            if(checkedTasksIndexes[i]>0)
-            {
-                const newPosition = checkedTasksIndexes[i]-1;
-                const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
-                this.$store.state.tasks.splice(newPosition,0,arrayElement);
-                checkedTasksIndexes[i] = -1;
-            }
+        for(let i = 0; i < checkedTasksIndexes.length; i++) {
+          console.log("i => " + i + ", length => " + checkedTasksIndexes.length);
+          if(checkedTasksIndexes[i]>0)
+          {
+            console.log("MoveUp: [" + checkedTasksIndexes[i] + "] -> [" + (checkedTasksIndexes[i]-1) + "]");
+            const newPosition = checkedTasksIndexes[i]-1;
+            const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
+            this.$store.state.tasks.splice(newPosition,0,arrayElement);
+            checkedTasksIndexes[i] = -1;
+          }
         }
     }
 
     public moveDown(): void { 
       const checkedTasksIndexes: number[] = [];
         this.selectedTasks.forEach( (task) => {
-            checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+          checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
         })
         checkedTasksIndexes.sort().reverse();
         for(let i = 0; i < checkedTasksIndexes.length; i++) {
             if(checkedTasksIndexes[i]<this.$store.state.tasks.length-1)
             {
-                const newPosition = checkedTasksIndexes[i]+1;
-                const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
-                this.$store.state.tasks.splice(newPosition,0,arrayElement);
-                checkedTasksIndexes[i] = -1;
+              const newPosition = checkedTasksIndexes[i]+1;
+              const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
+              this.$store.state.tasks.splice(newPosition,0,arrayElement);
+              checkedTasksIndexes[i] = -1;
             }
         }
     }
