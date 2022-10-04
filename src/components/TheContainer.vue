@@ -10,14 +10,11 @@
             placeholder="Opis zadania"
             id="task-description" 
             v-model.trim="taskDescription" 
-            @keydown.enter="addNewTask"
-          />
+            @keydown.enter="addNewTask"/>
           <button 
             @click="addNewTask"
             id="task-adder"
-            :disabled="!(taskDescription.length>0)">
-              + Dodaj
-            </button>
+            :disabled="!(taskDescription.length>0)">+ Dodaj</button>
         </span>
         <span id="important">
           <input type="checkbox" v-model="taskImportance" value="important-cb"/>
@@ -25,12 +22,15 @@
         </span>
         <ul v-if="$store.state.tasks.length">  
           <SingleItem v-for="(task, index) in $store.state.tasks" 
-            :key="task.id + index" 
-            :index="index" :task="task"
+            :key="task.id" 
+            :task="task"
             :status="selectedTasks.includes(task.id)"
             @task-selection="taskSelection" 
             @remove-task="removeSingleTask" >
-            {{task.description}}
+            <template v-slot:description>
+               {{ index+1 }}. {{ task.description }}
+               <span v-if="(index+1)%2==0">|| zadanie jest parzyste</span>
+            </template>
           </SingleItem>
         </ul>
         <ul v-else>Brak zadań do wyświetlenia</ul>
@@ -87,14 +87,14 @@ import TheHeader from './TheHeader.vue'
         })
         checkedTasksIndexes.sort();
         for(let i = 0; i < checkedTasksIndexes.length; i++) {
-          console.log("i => " + i + ", length => " + checkedTasksIndexes.length);
           if(checkedTasksIndexes[i]>0)
           {
+            checkedTasksIndexes.sort();
             console.log("MoveUp: [" + checkedTasksIndexes[i] + "] -> [" + (checkedTasksIndexes[i]-1) + "]");
             const newPosition = checkedTasksIndexes[i]-1;
             const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
             this.$store.state.tasks.splice(newPosition,0,arrayElement);
-            checkedTasksIndexes[i] = -1;
+            //checkedTasksIndexes[i] = -1;
           }
         }
     }
@@ -142,13 +142,14 @@ import TheHeader from './TheHeader.vue'
       }
     }
 
-    public removeSingleTask(value: {taskId: string, taskStatus: boolean}): void {
+    public removeSingleTask(taskId: string): void {
       if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
-        const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === value.taskId );
-        console.log("Should remove => id:" + value.taskId)
-        if(this.selectedTasks.includes(value.taskId)) this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == value.taskId),1)
+        const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === taskId );
+        console.log("Should remove => id:" + taskId)
+        if(this.selectedTasks.includes(taskId)) 
+          this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == taskId),1)
         this.$store.state.tasks.splice(index,1);
-        }
+      }
     }
 
     public markImportant(): void { //todo
