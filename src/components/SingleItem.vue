@@ -1,12 +1,8 @@
 <template>
         <li :class="{'important': task.important}"> 
             <input type="checkbox" :value="task.id" v-model="computedStatus"/>
-            {{index+1}} . <slot></slot>
-            <button 
-                class="remover" 
-                @click="removeTask">
-                    x
-            </button>
+            <slot name="description"></slot>
+            <button class="remover" @click="removeTask">x</button>
         </li>
 </template>
 
@@ -16,7 +12,7 @@ import { Task } from '../types'
     @Component
     export default class SingleItem extends Vue {
         //Props
-        @Prop() readonly index!: number;
+        //@Prop() readonly index!: number;
         @Prop() readonly task!: Task;
         @Prop() readonly status!: boolean;
 
