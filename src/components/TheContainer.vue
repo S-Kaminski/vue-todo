@@ -1,6 +1,6 @@
 <template>
     <div>
-      <TheHeader :count="$store.state.tasks.length"></TheHeader>
+      <TheHeader :count="tasks.length"></TheHeader>
       <div id="main">
         <p id="label">Lista zadań:</p>
         <p id="error"></p>
@@ -20,8 +20,8 @@
           <input type="checkbox" v-model="taskImportance" value="important-cb"/>
           <label for="important-cb">Ważne</label>
         </span>
-        <ul v-if="$store.state.tasks.length">  
-          <SingleItem v-for="(task, index) in $store.state.tasks" 
+        <ul v-if="tasks.length">  
+          <SingleItem v-for="(task, index) in tasks" 
             :key="task.id" 
             :task="task"
             :status="selectedTasks.includes(task.id)"
@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { mapState } from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types'
 import SingleItem from './SingleItem.vue'
@@ -58,6 +59,11 @@ import TheHeader from './TheHeader.vue'
     SingleItem,
     TheFooter
   },
+  computed: {
+    ...mapState([
+      'tasks'
+    ])
+  }
 })
 
   export default class TheContainer extends Vue {
@@ -83,7 +89,7 @@ import TheHeader from './TheHeader.vue'
     public moveUp(): void {
       const checkedTasksIndexes: number[] = [];
         this.selectedTasks.forEach( (task) => {
-          checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+          checkedTasksIndexes.push(this.tasks.findIndex((t: Task) => t.id == task))
         })
         checkedTasksIndexes.sort();
         for(let i = 0; i < checkedTasksIndexes.length; i++) {
@@ -92,8 +98,8 @@ import TheHeader from './TheHeader.vue'
             checkedTasksIndexes.sort();
             console.log("MoveUp: [" + checkedTasksIndexes[i] + "] -> [" + (checkedTasksIndexes[i]-1) + "]");
             const newPosition = checkedTasksIndexes[i]-1;
-            const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
-            this.$store.state.tasks.splice(newPosition,0,arrayElement);
+            const arrayElement = this.tasks.splice(checkedTasksIndexes[i],1)[0];
+            this.tasks.splice(newPosition,0,arrayElement);
             //checkedTasksIndexes[i] = -1;
           }
         }
@@ -102,15 +108,15 @@ import TheHeader from './TheHeader.vue'
     public moveDown(): void { 
       const checkedTasksIndexes: number[] = [];
         this.selectedTasks.forEach( (task) => {
-          checkedTasksIndexes.push(this.$store.state.tasks.findIndex((t: Task) => t.id == task))
+          checkedTasksIndexes.push(this.tasks.findIndex((t: Task) => t.id == task))
         })
         checkedTasksIndexes.sort().reverse();
         for(let i = 0; i < checkedTasksIndexes.length; i++) {
-            if(checkedTasksIndexes[i]<this.$store.state.tasks.length-1)
+            if(checkedTasksIndexes[i]<this.tasks.length-1)
             {
               const newPosition = checkedTasksIndexes[i]+1;
-              const arrayElement = this.$store.state.tasks.splice(checkedTasksIndexes[i],1)[0];
-              this.$store.state.tasks.splice(newPosition,0,arrayElement);
+              const arrayElement = this.tasks.splice(checkedTasksIndexes[i],1)[0];
+              this.tasks.splice(newPosition,0,arrayElement);
               checkedTasksIndexes[i] = -1;
             }
         }
@@ -144,11 +150,11 @@ import TheHeader from './TheHeader.vue'
 
     public removeSingleTask(taskId: string): void {
       if(confirm("Czy na pewno chcesz usunąć to zadanie?")) {
-        const index = this.$store.state.tasks.findIndex( (task: Task) => task.id === taskId );
+        const index = this.tasks.findIndex( (task: Task) => task.id === taskId );
         console.log("Should remove => id:" + taskId)
         if(this.selectedTasks.includes(taskId)) 
           this.selectedTasks.splice(this.selectedTasks.findIndex((i) => i == taskId),1)
-        this.$store.state.tasks.splice(index,1);
+        this.tasks.splice(index,1);
       }
     }
 
@@ -157,10 +163,10 @@ import TheHeader from './TheHeader.vue'
             if(confirm("Czy na pewno chcesz ustawić zaznaczone zadania na liście jako ważne?")) {
                 for(let i = 0; i < this.selectedTasks.length; i++)
                 {
-                    const index = this.$store.state.tasks.findIndex((t: Task) => t.id == this.selectedTasks[i])
-                    this.$store.state.tasks[index].important = true;
+                    const index = this.tasks.findIndex((t: Task) => t.id == this.selectedTasks[i])
+                    this.tasks[index].important = true;
                 }
-                this.$store.state.tasks
+                this.tasks
                 this.selectedTasks.splice(0);
                 console.log("Marked as important")
             }
@@ -168,9 +174,9 @@ import TheHeader from './TheHeader.vue'
     }
 
     public removeAllTasks(): void {
-        if(this.$store.state.tasks.length > 0) {
+        if(this.tasks.length > 0) {
             if(confirm("Czy na pewno chcesz usunąć wszystkie zadania na liście?")) {
-            this.$store.state.tasks.splice(0);
+            this.tasks.splice(0);
             this.selectedTasks.splice(0);
             console.log("Removed all tasks");
             }
