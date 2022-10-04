@@ -9,12 +9,12 @@ export default new Vuex.Store({
     tasks: [] as Task[]
   },
   getters: {
-    tasks (state){
-      return state.tasks
-    }
+    tasks (state) {
+      return state.tasks;
+    },
   },
   mutations: {
-    addNewTask(state, newTask){
+    addNewTask(state, newTask) {
       state.tasks.push({
         id: newTask.id,
         description: newTask.description,
