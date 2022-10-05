@@ -83,6 +83,7 @@ import TheHeader from './TheHeader.vue'
           important: this.taskImportance
         });
         this.taskDescription = "";
+        this.taskImportance = false; 
       }
     }
 
@@ -239,5 +240,6 @@ span#important {
 ul { 
   margin: 0;
   padding: 0;
+  overflow-y:scroll; height: 15vw;
 }
 </style>
